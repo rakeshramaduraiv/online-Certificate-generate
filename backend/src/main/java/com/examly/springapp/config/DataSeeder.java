@@ -20,7 +20,8 @@ public class DataSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        if (userRepository.count() == 0) {
+        // Only seed if the admin user doesn't exist yet (idempotent — safe to restart)
+        if (!userRepository.existsByEmail("admin@certificate.com")) {
             seedData();
         }
     }
@@ -39,8 +40,8 @@ public class DataSeeder implements CommandLineRunner {
         // Create system admin user
         User systemAdmin = new User();
         systemAdmin.setFullName("System Administrator");
-        systemAdmin.setEmail("admin@system.com");
-        systemAdmin.setPassword(passwordEncoder.encode("admin123"));
+        systemAdmin.setEmail("admin@certificate.com");
+        systemAdmin.setPassword(passwordEncoder.encode("Admin@123"));
         systemAdmin.setRole(User.Role.SYSTEM_ADMIN);
         systemAdmin.setInstitution(defaultInstitution);
         systemAdmin.setIsActive(true);
@@ -49,8 +50,8 @@ public class DataSeeder implements CommandLineRunner {
         // Create certificate admin user
         User certAdmin = new User();
         certAdmin.setFullName("Certificate Administrator");
-        certAdmin.setEmail("certadmin@system.com");
-        certAdmin.setPassword(passwordEncoder.encode("cert123"));
+        certAdmin.setEmail("certadmin@certificate.com");
+        certAdmin.setPassword(passwordEncoder.encode("CertAdmin@123"));
         certAdmin.setRole(User.Role.CERTIFICATE_ADMIN);
         certAdmin.setInstitution(defaultInstitution);
         certAdmin.setIsActive(true);
@@ -59,8 +60,8 @@ public class DataSeeder implements CommandLineRunner {
         // Create instructor user
         User instructor = new User();
         instructor.setFullName("John Instructor");
-        instructor.setEmail("instructor@system.com");
-        instructor.setPassword(passwordEncoder.encode("instructor123"));
+        instructor.setEmail("instructor@certificate.com");
+        instructor.setPassword(passwordEncoder.encode("Instructor@123"));
         instructor.setRole(User.Role.INSTRUCTOR);
         instructor.setInstitution(defaultInstitution);
         instructor.setIsActive(true);
@@ -69,8 +70,8 @@ public class DataSeeder implements CommandLineRunner {
         // Create student user
         User student = new User();
         student.setFullName("Jane Student");
-        student.setEmail("student@system.com");
-        student.setPassword(passwordEncoder.encode("student123"));
+        student.setEmail("student@certificate.com");
+        student.setPassword(passwordEncoder.encode("Student@123"));
         student.setRole(User.Role.STUDENT);
         student.setInstitution(defaultInstitution);
         student.setIsActive(true);
@@ -78,9 +79,10 @@ public class DataSeeder implements CommandLineRunner {
 
         log.info("Initial data seeded successfully!");
         log.info("Default users created:");
-        log.info("System Admin - Email: admin@system.com, Password: admin123");
-        log.info("Certificate Admin - Email: certadmin@system.com, Password: cert123");
-        log.info("Instructor - Email: instructor@system.com, Password: instructor123");
-        log.info("Student - Email: student@system.com, Password: student123");
+        log.info("System Admin      - Email: admin@certificate.com,      Password: Admin@123");
+        log.info("Certificate Admin - Email: certadmin@certificate.com,  Password: CertAdmin@123");
+        log.info("Instructor        - Email: instructor@certificate.com, Password: Instructor@123");
+        log.info("Student           - Email: student@certificate.com,    Password: Student@123");
+        log.info("WARNING: CHANGE ALL DEFAULT PASSWORDS IMMEDIATELY IN PRODUCTION!");
     }
 }
