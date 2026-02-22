@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: certichain-backend
+    env: java
+    buildCommand: mvn clean package -DskipTests
+    startCommand: java -Dserver.port=$PORT -Dspring.profiles.active=prod -jar target/springapp-0.0.1-SNAPSHOT.jar
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRATION
+        value: 86400000
+      - key: DB_URL
+        fromDatabase:
+          name: certichain-db
+          property: connectionString
+      - key: DB_USERNAME
+        fromDatabase:
+          name: certichain-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: certichain-db
+          property: password
+      - key: CORS_ALLOWED_ORIGINS
+        sync: false
+
+databases:
+  - name: certichain-db
+    databaseName: certificate_db
+    user: certichain_user
